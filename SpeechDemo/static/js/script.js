@@ -6,10 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const editorGroups = document.querySelectorAll('.editor-group');
     editorGroups.forEach(group => {
-        const editorId = group.getAttribute('data-editor-id');
-        const startBtn = group.querySelector('.start-btn');
-        const pauseBtn = group.querySelector('.pause-btn');
-        const stopBtn = group.querySelector('.stop-btn');
+        const toggleBtn = group.querySelector('.toggle-btn'); // Single toggle button
         const indicator = group.querySelector('.indicator');
         const editorContainer = group.querySelector('.editor-container');
 
@@ -40,28 +37,24 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         };
 
-        startBtn.addEventListener('click', function() {
+        // Toggle between Record and Pause
+        toggleBtn.addEventListener('click', function() {
             if (!isListening) {
+                // Start recording
                 recognition.start();
                 isListening = true;
+                toggleBtn.innerHTML = '<i class="fas fa-pause"></i> '; // Change button to Pause
+                toggleBtn.classList.remove('btn-primary'); // Remove the primary class
+                toggleBtn.classList.add('btn-warning'); // Add the warning class (for pause state)
                 indicator.textContent = 'Listening... You can speak now!';
-            }
-        });
-
-        pauseBtn.addEventListener('click', function() {
-            if (isListening) {
+            } else {
+                // Pause recording
                 recognition.stop();
                 isListening = false;
-                indicator.textContent = 'Recording paused. Click start to continue.';
-            }
-        });
-
-        stopBtn.addEventListener('click', function() {
-            if (isListening) {
-                recognition.stop();
-                isListening = false;
-                indicator.textContent = 'Recording stopped.';
-                quill.insertText(quill.getLength(), '\n--- Recording stopped ---\n');
+                toggleBtn.innerHTML = '<i class="fas fa-microphone"></i> '; // Change button to Record
+                toggleBtn.classList.remove('btn-warning'); // Remove the primary class
+                toggleBtn.classList.add('btn-primary'); // Add the warning class (for pause state)
+                indicator.textContent = 'Recording paused. Click Record to continue.';
             }
         });
 
