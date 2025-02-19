@@ -30,12 +30,14 @@ document.addEventListener('DOMContentLoaded', function() {
             for (let i = event.resultIndex; i < event.results.length; i++) {
                 const transcript = event.results[i][0].transcript;
                 if (event.results[i].isFinal) {
-                    finalTranscript += transcript;
+                    // finalTranscript += transcript;
+                    // console.log(finalTranscript);
+                    // quill.setText(`${finalTranscript}`);
+                    quill.clipboard.dangerouslyPasteHTML(quill.getLength() - 1, `<span>${transcript}</span>`);
                 } else {
                     interimTranscript += transcript;
                 }
             }
-            quill.setText(`${finalTranscript} ${interimTranscript}`);
         };
 
         startBtn.addEventListener('click', function() {
@@ -59,13 +61,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 recognition.stop();
                 isListening = false;
                 indicator.textContent = 'Recording stopped.';
-                // quill.insertText(quill.getLength(), '\n--- Recording stopped ---\n');
+                quill.insertText(quill.getLength(), '\n--- Recording stopped ---\n');
             }
         });
 
         recognition.onerror = function(event) {
-            // quill.insertText(quill.getLength(), `\n[-] Error with recording, there're another recording started.\n`);
+            quill.insertText(quill.getLength(), `\n[-] Error with recording, there's another recording started.\n`);
             indicator.textContent = 'Error .. Recording stopped because another record started!';
         };
+
+        // Update finalTranscript when user types in Quill editor
+        quill.on('text-change', function () {
+            finalTranscript = quill.root.innerHTML;            // Update final transcript
+            console.log(finalTranscript);
+        });
     });
 });
