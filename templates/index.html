@@ -51,7 +51,6 @@
                 return;
             }
 
-            // Initialize all editor groups
             const editorGroups = document.querySelectorAll('.editor-group');
             editorGroups.forEach(group => {
                 const editorId = group.getAttribute('data-editor-id');
@@ -61,7 +60,6 @@
                 const indicator = group.querySelector('.indicator');
                 const editorContainer = group.querySelector('.editor-container');
 
-                // Initialize Quill editor
                 const quill = new Quill(editorContainer, {
                     theme: 'snow'
                 });
