@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const editorGroups = document.querySelectorAll('.editor-group');
-
+    
     editorGroups.forEach(group => {
         const toggleBtn = group.querySelector('.toggle-btn');
         const indicator = group.querySelector('.indicator');
@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const quill = new Quill(editorContainer, {
             theme: 'snow'
         });
+
+        interimTextarea.style.display = 'none';
 
         const recognition = new webkitSpeechRecognition();
         recognition.continuous = true;
@@ -48,6 +50,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 toggleBtn.classList.remove('btn-primary');
                 toggleBtn.classList.add('btn-warning'); 
                 indicator.textContent = 'Listening... You can speak now!';
+
+                interimTextarea.style.display = 'block';
             } else {
                 recognition.stop();
                 isListening = false;
@@ -55,15 +59,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 toggleBtn.classList.remove('btn-warning'); 
                 toggleBtn.classList.add('btn-primary'); 
                 indicator.textContent = 'Record Stopped!';
+
+                interimTextarea.style.display = 'none';
             }
         });
 
         recognition.onerror = function (event) {
-            toggleBtn.innerHTML = '<i class="fas fa-microphone"></i> '; 
-            quill.insertText(quill.getLength(), `\n`);
-            indicator.textContent = 'Record Stopped!';
-            toggleBtn.classList.remove('btn-warning'); 
-            toggleBtn.classList.add('btn-primary'); 
+            recognition.stop();
+                isListening = false;
+                toggleBtn.innerHTML = '<i class="fas fa-microphone"></i> '; 
+                toggleBtn.classList.remove('btn-warning'); 
+                toggleBtn.classList.add('btn-primary'); 
+                indicator.textContent = 'Record Stopped!';
+
+                interimTextarea.style.display = 'none';
         };
 
         const hiddenInput = group.querySelector('.quill-content');
